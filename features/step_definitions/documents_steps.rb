@@ -51,3 +51,11 @@ When(/^I should see ([^"]*) revisions for "([^"]*)"$/) do |revisions, document|
   doc = Document.find_by_title(document)
   expect doc.versions.count == revisions
 end
+
+Then(/^I should( not)? see "([^"]*)" within "([^"]*)"$/) do |negative, text, element|
+	unless negative
+		expect(page.find(:css, element)).to have_link text
+	else 
+		expect(page.find(:css, element)).not_to have_link text
+	end
+end
