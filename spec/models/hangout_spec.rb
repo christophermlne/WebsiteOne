@@ -30,5 +30,12 @@ describe Hangout, type: :model do
       expect(hangout.live?).to be_falsey
     end
   end
-
+  describe "public activity" do
+    it "responds to create activity" do
+      expect(hangout).to respond_to :create_activity
+    end
+    it 'has public-activity enabled' do
+      expect(hangout.public_activity_enabled?).to eq true
+    end
+  end
 end
