@@ -6,6 +6,7 @@ describe HangoutsController do
   before do
     allow(controller).to receive(:allowed?).and_return(true)
     allow(SlackService).to receive(:post_hangout_notification)
+    allow(controller).to receive(:create_activity)
     request.env['HTTP_ORIGIN'] = 'http://test.com'
   end
 
@@ -27,6 +28,14 @@ describe HangoutsController do
         get :index, {live: 'true'}
         expect(assigns(:hangouts).count).to eq(3)
       end
+    end
+  end
+
+  describe 'public_activity' do
+    it 'calls create_activity' do
+      get :update, params
+      hangout = Hangout.find_by_uid('333')
+      expect(hangout).to receive(:create_activity)
     end
   end
 
@@ -74,7 +83,7 @@ describe HangoutsController do
       expect(response).to redirect_to(event_path(50))
     end
 
-    context 'required parametes are missing' do
+    context 'required parameters are missing' do
       it 'raises exception on missing host_id' do
         params[:host_id] = nil
         expect{ get :update, params }.to raise_error(ActionController::ParameterMissing)

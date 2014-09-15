@@ -4,6 +4,7 @@ class HangoutsController < ApplicationController
 
   def update
     hangout = Hangout.find_or_create_by(uid: params[:id])
+    hangout.create_activity :create, owner: current_user
 
     if hangout.try!(:update, hangout_params)
       SlackService.post_hangout_notification(hangout) if params[:notify] == 'true'
